@@ -1,4 +1,6 @@
 # Projeto Pokemon - Main
+# Goal: find out the best combination of 6 pokemon for a team.
+# tiaaagosr@gmail.com
 
 pkmn = {}
 tipo = {}
