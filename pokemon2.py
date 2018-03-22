@@ -7,6 +7,8 @@ tipo = {}
 tipoGuia = {}
 cnt = 1
 
+
+
 # Creates the 'pkmn' dictionary. Each entrance, from '1' to '802' represents a Pokémon. The Dictionary contains the pokémon name, type(s) and stats.
 # Stats are, in order, HP, Attack, Defensa, Sp.Atk, Sp.Def, Speed, Total Stats Point, Average Stats Point
 for line in open('pkmnstats.csv'):
@@ -27,12 +29,12 @@ for line in open('typechart.csv'):
         tipo[typ[0]][i] = float(tipo[typ[0]][i])
         
 def battle(fighter1, fighter2):
-    "This function will be used to simulate the battle between 2 pokémon."
+    "This function will be used to simulate the battle between 2 pokémon. fighter1 = index of the pokemon A. fighter2 = index of the pokemon B."
 
     
     # First, load the two dueling pokémon into the function and create blank effectiveness modifier for them.
-    pkmnA = pkmn[fighter1]
-    pkmnB = pkmn[fighter2]
+    pkmnA = pkmn[fighter1][:]
+    pkmnB = pkmn[fighter2][:]
 
     modA = [1,1]
     modB = [1,1]
@@ -79,31 +81,34 @@ def battle(fighter1, fighter2):
         else:
             pkmnA[3] = pkmnA[3] - damageSp
 
-    if pkmnA[3] <= 0 and pkmnB[3] < 0:
-        if pkmnA[8] < pkmnB[8]:
-            winner = pkmnB[0]
+    if pkmnA[3] <= 0 and pkmnB[3] <= 0: # if both Pokémon go to 0 hp or below, check speed. Higher speed wins.
+        if pkmnA[8] >= pkmnB[8]: # if the speed is the same, pokémon A wins.
+            return(1)
         else:
-            winner = pkmnA[0]
+            return(0)
 
-    else:
+    else: # if at least 1 pokémon is above zero hp. Check hp only.
         if pkmnA[3] <= 0:
-            winner = pkmnB[0]
+            return(0)
         else:
-            winner = pkmnA[0]
-    
+            return(1)
 
 
-    print(pkmnA)
-    print(pkmnB)
-    print('The winner is: ' + winner)
-    return
+# Creates a vector containing all the keys in the pkmn dictionary.
+pkmn_i = list(pkmn.keys())
+pkmn_matrix = [] # this will receive the results of the battles
 
-import random
-fighters = random.sample(list(pkmn.keys())[0:10],2)
+for i in range(0,len(pkmn_i)):
+    pkmn_matrix.append([pkmn[pkmn_i[i]][0]]) # Starts each line on the matrix writing the name of the focal pokémon, which will be made to fight with all others.
+    for j in range(0,len(pkmn_i)): # make focal pkmn fight to all others, including self.
+        pkmn_matrix[i].append(battle(pkmn_i[i],pkmn_i[j])) # expand line by adding 1 when focal pkmn wins and 0 when it loses.
+    pkmn_matrix[i].append(sum(pkmn_matrix[i][1:]))
 
-battle(fighters[0], fighters[1])
+max(pkmn_matrix, key=lambda victories: victories[897]) # this should tell me the top pkmn - not tested yet
+
+
 
 # amanha:
-# computar/tabelar as vitorias
+# computar as vitorias
 
     
